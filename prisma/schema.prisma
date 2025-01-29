@@ -21,7 +21,8 @@ model User {
   role Role @default(USER)
   tasks Task[]
   refreshToken String?
-  TwoFactorSecret String? //2FA
+  salt String
+  twoFactorSecret String
   fingerPrintHash String?
 }
 

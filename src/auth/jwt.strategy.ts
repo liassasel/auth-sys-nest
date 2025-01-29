@@ -9,24 +9,34 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(private prisma: PrismaService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: 'clave-secreta-segura'
+            secretOrKey: 'Alessail2041', 
+            ignoreExpiration: false
         });
     }
 
     async validate(payload: any) {
+
+        if (!payload?.fp_hash) {
+            throw new UnauthorizedException('Invalid Token')
+        }
+
         const user = await this.prisma.user.findUnique({
             where: { id: payload.sub },
         });
 
+        if (!user) {
+            throw new UnauthorizedException('User not found')
+        }
+
         // Validate fingerprint token
 
-        const fingerprintValid = await bcrypt.compare(
-            payload.fingerprint,
+        const isValidFingerprint = await bcrypt.compare(
+            payload.fp_hash,
             user.fingerPrintHash,
         );
 
-        if (!user || !fingerprintValid) {
-            throw new UnauthorizedException('Invalid Token');
+        if (!isValidFingerprint) {
+            throw new UnauthorizedException(' fingerprint does not match ');
         }
 
         return user;

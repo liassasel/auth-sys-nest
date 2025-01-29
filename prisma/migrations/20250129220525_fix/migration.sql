@@ -14,7 +14,8 @@ CREATE TABLE "User" (
     "password" TEXT NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'USER',
     "refreshToken" TEXT,
-    "TwoFactorSecret" TEXT,
+    "salt" TEXT NOT NULL,
+    "twoFactorSecret" TEXT NOT NULL,
     "fingerPrintHash" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
